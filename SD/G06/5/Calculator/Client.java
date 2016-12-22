@@ -2,9 +2,9 @@ import java.net.*;
 import java.io.*;
 
 public class Client extends Thread {
-	Socket cli;
-	BufferedReader in;
-	PrintWriter out;
+	private Socket cli;
+	private BufferedReader in;
+	private PrintWriter out;
 
 	Client(Socket cli) throws IOException {
 		this.cli = cli;
