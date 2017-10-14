@@ -1,0 +1,9 @@
+build/
+*.class
+*.beam
+
+tags
+bibliography
+slides
+*books*
+*.pdf

@@ -1,0 +1,17 @@
+MODULE main
+
+DEFINE
+    N := 1000;
+    ODD_LIMIT := (N - 1) / 3;
+    OVERFLOW := n >= ODD_LIMIT & n mod 2 = 1;
+
+VAR
+    n : 1..N;
+
+ASSIGN
+    next(n) := case OVERFLOW: n;
+                    TRUE: n mod 2 = 0 ? n/2 : n*3 + 1;
+               esac;
+
+CTLSPEC
+    AF (!OVERFLOW -> n = 1)

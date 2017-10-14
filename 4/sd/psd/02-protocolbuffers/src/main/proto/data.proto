@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package messaging;
+
+message Message {
+  optional string username = 1;
+  optional string content = 2;
+}

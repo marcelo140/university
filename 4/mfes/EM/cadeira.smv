@@ -1,0 +1,45 @@
+MODULE main
+
+DEFINE
+	N := 10;
+
+VAR
+	x : -N .. N;
+	y : -N .. N;
+	o : 0..3;
+
+IVAR
+	p : 0..3;
+	d : {cw,ccw};
+
+ASSIGN
+	init(x) := 0;
+	init(y) := 0;
+	init(o) := 0;
+	next(x) := case p = 2 & d = ccw & x < N  : x + 1;
+	                p = 3 & d = cw  & x < N  : x + 1;
+	                p = 0 & d = ccw & x > -N : x - 1;
+	                p = 1 & d = cw  & x > -N : x - 1;
+	                TRUE : x;
+			   esac;
+    next(y) := case p = 2 & d = cw  & y < N  : y + 1;
+	                p = 3 & d = ccw & y > -N : y - 1;
+	                p = 0 & d = cw  & y > -N : y - 1;
+	                p = 1 & d = ccw & y < N  : y + 1;
+	                TRUE : y;
+			   esac;
+    next(o) := case d = cw  : (o + 1) mod 4;
+    			    d = ccw : (o + 3) mod 4;
+    		   esac;
+
+TRANS
+	x = N  -> !(p = 2 & d = ccw) & !(p = 3 & d = cw)
+TRANS
+	x = -N -> !(p = 0 & d = ccw) & !(p = 1 & d = cw)
+TRANS
+	y = N  -> !(p = 2 & d = cw)  & !(p = 1 & d = ccw)
+TRANS
+    y = -N -> !(p = 3 & d = ccw) & !(p = 0 & d = cw)
+
+LTLSPEC
+	G !(x = 1 & y = 0 & o = 0)

@@ -1,0 +1,43 @@
+MODULE main
+
+DEFINE
+
+NEW_COLOR := 3 - (cor[i] + cor[j]);
+
+-- Exercise c)
+--
+--    aux := (cor[0]=0 ? 1 : 0) + (cor[1]=0 ? 1 : 0) + (cor[2]=0 ? 1 : 0) +
+--           (cor[3]=0 ? 1 : 0) + (cor[4]=0 ? 1 : 0) + (cor[5]=0 ? 1 : 0);
+--
+--  aux é uma expressão que conta o número de camaleões que adquiriram a cor 0
+
+VAR
+    cor : array 0..5 of 0..2;
+
+IVAR
+    i : 0..5;
+    j : 0..5;
+
+ASSIGN
+    init(cor[0]) := 0;
+    init(cor[1]) := 1;
+    init(cor[2]) := 1;
+    init(cor[3]) := 2;
+    init(cor[4]) := 2;
+    init(cor[5]) := 2;
+
+-- Exercise a)
+    next(cor[0]) := (i = 0 | j = 0) & cor[i] != cor[j] ? NEW_COLOR : cor[0];
+    next(cor[1]) := (i = 1 | j = 1) & cor[i] != cor[j] ? NEW_COLOR : cor[1];
+    next(cor[2]) := (i = 2 | j = 2) & cor[i] != cor[j] ? NEW_COLOR : cor[2];
+    next(cor[3]) := (i = 3 | j = 3) & cor[i] != cor[j] ? NEW_COLOR : cor[3];
+    next(cor[4]) := (i = 4 | j = 4) & cor[i] != cor[j] ? NEW_COLOR : cor[4];
+    next(cor[5]) := (i = 5 | j = 5) & cor[i] != cor[j] ? NEW_COLOR : cor[5];
+
+-- Exercise b)
+CTLSPEC
+    AF !(cor[0] = cor[1] & 
+         cor[0] = cor[2] & 
+         cor[0] = cor[3] & 
+         cor[0] = cor[4] &
+         cor[0] = cor[5])

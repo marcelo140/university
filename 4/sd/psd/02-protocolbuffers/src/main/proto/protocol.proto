@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package authentication;
+
+message AuthenticationRequest {
+  optional string username = 1;
+  optional string password = 2;
+  optional RequestType request = 3; 
+
+  enum RequestType {
+    REGISTRATION = 1;
+    LOGIN = 2;
+  }
+}
+
+message AuthenticationResponse {
+  optional ResponseType response = 1;
+  optional string description = 2;
+
+  enum ResponseType { 
+    OK = 1;
+    ERROR = 2;
+  }
+}
