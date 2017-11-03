@@ -34,10 +34,27 @@ ASSIGN
     next(cor[4]) := (i = 4 | j = 4) & cor[i] != cor[j] ? NEW_COLOR : cor[4];
     next(cor[5]) := (i = 5 | j = 5) & cor[i] != cor[j] ? NEW_COLOR : cor[5];
 
+TRANS
+    i != j
+
+JUSTICE i = 0
+JUSTICE i = 1
+JUSTICE i = 2
+JUSTICE i = 3
+JUSTICE i = 4
+JUSTICE i = 5
+
+JUSTICE j = 0
+JUSTICE j = 1
+JUSTICE j = 2
+JUSTICE j = 3
+JUSTICE j = 4
+JUSTICE j = 5
+
 -- Exercise b)
-CTLSPEC
-    AF !(cor[0] = cor[1] & 
-         cor[0] = cor[2] & 
-         cor[0] = cor[3] & 
-         cor[0] = cor[4] &
-         cor[0] = cor[5])
+LTLSPEC
+    F !(cor[0] = cor[1] & 
+        cor[0] = cor[2] & 
+        cor[0] = cor[3] & 
+        cor[0] = cor[4] &
+        cor[0] = cor[5])

@@ -1,0 +1,45 @@
+MODULE cell(x, y, initial_state, main)
+
+DEFINE
+    TARGETED := abs(main.x - x) + abs(main.y - y) <= 1;
+
+VAR
+    state: boolean;        
+
+ASSIGN
+    init(state) := initial_state;
+    next(state) := TARGETED ? !state : state;
+
+MODULE main
+
+VAR
+    counter: 0..100;
+
+    c1: cell(0, 0, TRUE, self);
+    c2: cell(0, 1, FALSE, self);
+    c3: cell(0, 2, FALSE, self);
+
+    c4: cell(1, 0, TRUE, self);
+    c5: cell(1, 1, TRUE, self);
+    c6: cell(1, 2, FALSE, self);
+
+    c7: cell(2, 0, TRUE, self);
+    c8: cell(2, 1, TRUE, self);
+    c9: cell(2, 2, TRUE, self);
+
+IVAR
+    x : 0..2;
+    y : 0..2;
+
+ASSIGN
+    init(counter) := 0;
+    next(counter) := counter < 100 ? counter + 1 : counter;
+
+CTLSPEC
+    A [
+       (c1.state != FALSE | c2.state != FALSE | c3.state != FALSE |
+        c4.state != FALSE | c5.state != FALSE | c6.state != FALSE |
+        c7.state != FALSE | c8.state != FALSE | c9.state != FALSE)
+      U
+        counter = 4
+      ]

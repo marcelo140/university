@@ -16,19 +16,17 @@ COUNT2 := (cor[0] = 2 ? 1 : 0) + (cor[1] = 2 ? 1 : 0) +
           (cor[2] = 2 ? 1 : 0) + (cor[3] = 2 ? 1 : 0) + 
           (cor[4] = 2 ? 1 : 0) + (cor[5] = 2 ? 1 : 0);
 
+MULTIPLEOF3 := (COUNT0 - COUNT1) mod 3 = 0 |
+               (COUNT1 - COUNT2) mod 3 = 0 |
+               (COUNT2 - COUNT0) mod 3 = 0;
 VAR
     cor : array 0..5 of 0..2;
-    multipleOf3 : boolean;
 
 IVAR
     i : 0..5;
     j : 0..5;
 
 ASSIGN
-    init(multipleOf3) := (COUNT0 - COUNT1) mod 3 = 0 |
-                         (COUNT1 - COUNT2) mod 3 = 0 |
-                         (COUNT2 - COUNT0) mod 3 = 0;
-    
     next(cor[0]) := (i = 0 | j = 0) & cor[i] != cor[j] ? NEW_COLOR : cor[0];
     next(cor[1]) := (i = 1 | j = 1) & cor[i] != cor[j] ? NEW_COLOR : cor[1];
     next(cor[2]) := (i = 2 | j = 2) & cor[i] != cor[j] ? NEW_COLOR : cor[2];
@@ -36,8 +34,22 @@ ASSIGN
     next(cor[4]) := (i = 4 | j = 4) & cor[i] != cor[j] ? NEW_COLOR : cor[4];
     next(cor[5]) := (i = 5 | j = 5) & cor[i] != cor[j] ? NEW_COLOR : cor[5];
 
+JUSTICE i = 0
+JUSTICE i = 1
+JUSTICE i = 2
+JUSTICE i = 3
+JUSTICE i = 4
+JUSTICE i = 5
+
+JUSTICE j = 0
+JUSTICE j = 1
+JUSTICE j = 2
+JUSTICE j = 3
+JUSTICE j = 4
+JUSTICE j = 5
+
 CTLSPEC
-    multipleOf3 -> AF (cor[0] = cor[1] & 
+    MULTIPLEOF3 -> EF (cor[0] = cor[1] & 
                        cor[0] = cor[2] & 
                        cor[0] = cor[3] & 
                        cor[0] = cor[4] &
