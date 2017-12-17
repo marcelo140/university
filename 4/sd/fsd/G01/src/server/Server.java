@@ -1,10 +1,12 @@
+package server;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
 
-class Server {
+public class Server {
     public static void main(String[] args) throws IOException {
         List<Socket> clients = new ArrayList<>();
         ServerSocket listener = new ServerSocket(5000);

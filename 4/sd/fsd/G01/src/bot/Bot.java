@@ -1,7 +1,9 @@
+package bot;
+
 import java.net.Socket;
 import java.io.IOException;
 
-class Bot {
+public class Bot {
     public static void main(String[] args) throws IOException {
         long writeDelay = Long.parseLong(args[0]);
         long readDelay = Long.parseLong(args[1]);
