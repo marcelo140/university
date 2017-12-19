@@ -1,0 +1,43 @@
+MODULE main
+
+DEFINE
+    SPEED := [1, 2, 5, 8];
+    CROSSING_TIME := SPEED[j] >= SPEED[i] ? SPEED[j] : SPEED[i];
+
+VAR
+    people: array 0..3 of boolean;
+    time: 0..150;
+    torch: boolean;
+
+IVAR
+    i: 0..3;
+    j: 0..3;
+
+ASSIGN
+    init(people[0]) := FALSE;
+    init(people[1]) := FALSE;
+    init(people[2]) := FALSE;
+    init(people[3]) := FALSE;
+    init(torch) := FALSE;
+    init(time) := 0;
+
+    next(people[0]) := (i = 0 | j = 0) ? !people[0] : people[0];
+    next(people[1]) := (i = 1 | j = 1) ? !people[1] : people[1];
+    next(people[2]) := (i = 2 | j = 2) ? !people[2] : people[2];
+    next(people[3]) := (i = 3 | j = 3) ? !people[3] : people[3];
+
+    next(torch) := !torch;
+
+    next(time) := (time + CROSSING_TIME) mod 151;
+
+TRANS
+    people[i] = torch
+TRANS
+    people[j] = torch
+
+CTLSPEC
+    AG !(people[0] = TRUE & 
+         people[1] = TRUE & 
+         people[2] = TRUE &
+         people[3] = TRUE & 
+         time <= 15)

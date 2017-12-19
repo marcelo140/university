@@ -1,0 +1,1 @@
+java -cp .:jeromq-0.4.2.jar "$@"
