@@ -1,0 +1,16 @@
+act
+    coin, coin', coinCom,
+    coffee, coffee', coffeeCom, pub';
+
+proc
+    CM = coin.coffee'.CM;
+    CS = pub'.coin'.coffee.CS;
+    CMCS = CS || CS;
+    SmUni = hide({coffeeCom, coinCom},
+            block({coffee, coffee', coin, coin'},
+            comm({coffee|coffee' -> coffeeCom,
+                  coin|coin'     -> coinCom},
+            CMCS)));
+
+init
+    SmUni;

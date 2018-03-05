@@ -1,0 +1,11 @@
+act
+    _in, out', m, m', mCom;
+
+proc
+    B = _in . out' . B;
+
+    BI = rename({out'->m'}, B);
+    BO = rename({_in->m}, B);
+
+init
+    hide({mCom}, block({m, m'}, comm({m|m' -> mCom}, BI || BO)));

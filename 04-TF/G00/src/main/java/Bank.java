@@ -10,13 +10,10 @@ import io.atomix.catalyst.serializer.Serializer;
 import io.atomix.catalyst.transport.Address;
 import io.atomix.catalyst.transport.Transport;
 import io.atomix.catalyst.transport.netty.NettyTransport;
-import pt.haslab.ekit.Clique;
 
 public class Bank implements IBank {
-    private static ThreadContext tc, tcc;
+    private static ThreadContext tc;
     private static Transport t;
-    private static Clique c;
-    private static int id;
 
     private int balance = 0;
 
@@ -29,14 +26,12 @@ public class Bank implements IBank {
         tc.serializer().register(BankMoveReq.class);
         tc.serializer().register(BankMoveRep.class);
 
-        id = Integer.parseInt(args[0]);
-        Bank b = new Bank();
-        setInnerNetwork(b, id);
+        run(new Bank());
     }
 
     private static void run(IBank bank) {
         tc.execute(() -> {
-            t.server().listen(new Address("localhost", 5000+id), c -> {
+            t.server().listen(new Address("localhost:5000"), c -> {
                 c.handler(BankBalanceReq.class, req -> {
                     int balance = bank.balance();
 
@@ -44,10 +39,6 @@ public class Bank implements IBank {
                 });
                 c.handler(BankMoveReq.class, req -> {
                     boolean res = bank.move(req.getAmount());
-                    tcc.execute(() -> {
-                        System.out.println("Sending balance");
-                        c.send(1-id);
-                    });
 
                     return Futures.completedFuture(new BankMoveRep(res));
                 });
@@ -66,31 +57,5 @@ public class Bank implements IBank {
         }
 
         return false;
-    }
-
-    public synchronized void setBalance(int amount) {
-        balance = amount;
-    }
-
-    private static void setInnerNetwork(Bank b, int id) {
-        Transport tt = new NettyTransport();
-        tcc = new SingleThreadContext("tcc-%d", new Serializer());
-        Address[] addresses = new Address[]{
-                new Address("localhost:5010"),
-                new Address("localhost:5011")
-        };
-
-        c = new Clique(tt, id, addresses);
-        tcc.execute(() -> {
-            c.handler(Integer.class, (_r, m) -> {
-                System.out.println("Received");
-                b.setBalance(m);
-            });
-
-            c.open().thenRun(() -> {
-                System.out.println("Clique connected!");
-                run(b);
-            });
-        }).join();
     }
 }

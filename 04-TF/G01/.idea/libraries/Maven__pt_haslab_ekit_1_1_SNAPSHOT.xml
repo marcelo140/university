@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: pt.haslab:ekit:1.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/pt/haslab/ekit/1.1-SNAPSHOT/ekit-1.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/pt/haslab/ekit/1.1-SNAPSHOT/ekit-1.1-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/pt/haslab/ekit/1.1-SNAPSHOT/ekit-1.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -17,7 +17,7 @@ public class BankStub implements IBank {
     private final ThreadContext tc;
     private final Connection c;
 
-    public BankStub(int id) throws Exception {
+    public BankStub() throws Exception {
         Transport t = new NettyTransport();
         tc = new SingleThreadContext("tc-%d", new Serializer());
 
@@ -27,7 +27,7 @@ public class BankStub implements IBank {
         tc.serializer().register(BankMoveRep.class);
 
         c = tc.execute(() ->
-                t.client().connect(new Address("localhost", 5000+id))
+                t.client().connect(new Address("localhost:5000"))
         ).join().get();
     }
 
