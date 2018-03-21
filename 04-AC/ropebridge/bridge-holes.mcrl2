@@ -1,0 +1,45 @@
+sort Position = struct start | finish;
+
+act
+    forward_flashlight, ff: Int # Int;
+    back_flashlight, bf: Int;
+
+    report, rp: Int # Int;
+    reportAck, ra;
+
+    completed: Int;
+
+proc 
+    Flashlight(pos:Position) =
+       (pos == start) ->
+         % Case 1.
+         sum s,s':Int . forward_flashlight(s,s') . report(max(s,s'), 2) . reportAck . Flashlight(finish)
+       <> 
+         % Case 2.
+         sum s:Int . back_flashlight(s) . report(s, -1) . reportAck . Flashlight(start);
+
+    Adventurer(pos:Position,speed:Int) =
+        (pos == start) ->
+            sum s:Int . (forward_flashlight(s,speed).Adventurer(finish,speed) + forward_flashlight(speed,s).Adventurer(finish,speed))
+        <>
+            back_flashlight(speed) . Adventurer(start,speed);
+
+    Referee(time:Int,missing:Int) =
+        sum v,f:Int . (missing-f == 0) ->
+            report(v,f) . completed(time+v)
+        <>
+            report(v,f) . reportAck . Referee(time+v, missing-f);
+
+    System = 
+        Referee(0, 4)
+        || Flashlight(start)
+        || Adventurer(start,1) 
+        || Adventurer(start,2)
+        || Adventurer(start,5)
+        || Adventurer(start,10);
+
+init
+    allow({ff,bf,rp,ra,completed},
+        comm({report|report->rp,reportAck|reportAck->ra},
+            comm({back_flashlight|back_flashlight->bf},
+                comm({forward_flashlight|forward_flashlight|forward_flashlight->ff}, System))));
