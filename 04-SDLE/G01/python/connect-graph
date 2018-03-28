@@ -1,0 +1,49 @@
+#!/usr/bin/python3.6
+import argparse
+
+import numpy
+import networkx as nx
+import random
+
+import matplotlib.pyplot as plt
+
+def plot(vertices):
+    x_axis = range(10, vertices+10, 10)
+    y_axis = [numpy.mean(collect(x)) for x in x_axis]
+
+    plt.plot(x_axis, y_axis, marker='.')
+
+    plt.ylabel('Average edges')
+    plt.xlabel('Number of nodes')
+
+    plt.savefig('plot.png')
+
+def save(graph):
+    nx.draw(graph)
+    plt.savefig("graph.png")
+
+def collect(vertices):
+    return [generate_graph(vertices).number_of_edges() for x in range(10)]
+
+def generate_graph(vertices):
+    G = nx.Graph()
+    G.add_nodes_from(range(vertices))
+
+    while not nx.is_connected(G):
+        [x,y] = random.sample(G.nodes, 2)
+        G.add_edge(x, y)
+
+    return G
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Generates funny things related to connected graphs")
+    parser.add_argument("vertices", type=int, default=10)
+    parser.add_argument("-p", "--plot", help="Generates a plot with the average numer of edges necessary to completely connect a graph", action="store_true")
+
+    args = parser.parse_args()
+
+    if not args.plot:
+        G = generate_graph(args.vertices)
+        save(G)
+    else:
+        plot(args.vertices)

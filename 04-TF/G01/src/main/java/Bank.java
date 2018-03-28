@@ -15,7 +15,7 @@ import pt.haslab.ekit.Clique;
 public class Bank implements IBank {
     private static ThreadContext tc, tcc;
     private static Transport t;
-    private static Clique c;
+    private static Clique cliq;
     private static int id;
 
     private int balance = 0;
@@ -45,8 +45,7 @@ public class Bank implements IBank {
                 c.handler(BankMoveReq.class, req -> {
                     boolean res = bank.move(req.getAmount());
                     tcc.execute(() -> {
-                        System.out.println("Sending balance");
-                        c.send(1-id);
+                        cliq.send(1-id, bank.balance());
                     });
 
                     return Futures.completedFuture(new BankMoveRep(res));
@@ -80,14 +79,13 @@ public class Bank implements IBank {
                 new Address("localhost:5011")
         };
 
-        c = new Clique(tt, id, addresses);
+        cliq = new Clique(tt, Clique.Mode.ALL, id, addresses);
         tcc.execute(() -> {
-            c.handler(Integer.class, (_r, m) -> {
-                System.out.println("Received");
+            cliq.handler(Integer.class, (_r, m) -> {
                 b.setBalance(m);
             });
 
-            c.open().thenRun(() -> {
+            cliq.open().thenRun(() -> {
                 System.out.println("Clique connected!");
                 run(b);
             });

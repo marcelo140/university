@@ -21,8 +21,18 @@ public class Tester {
         for(int i = 0; i < nClients; i++)
             threads[i].join();
 
-        System.out.println("Bank balance: " + bank1.balance());
-        System.out.println("Bank balance: " + bank2.balance());
+        try {
+            System.out.println("Bank balance: " + bank1.balance());
+        } catch(Exception e) {
+            System.out.println("Bank 1 is down");
+        }
+
+        try {
+            System.out.println("Bank balance: " + bank2.balance());
+        } catch(Exception e) {
+            System.out.println("Bank 2 is down");
+        }
+
         System.out.println("Theoretical balance: " + balance.get());
     }
 }

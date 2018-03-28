@@ -25,9 +25,5 @@
     <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.5.Final" level="project" />
     <orderEntry type="library" name="Maven: io.atomix.catalyst:catalyst-transport:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: pt.haslab:ekit:1.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: io.atomix.catalyst:catalyst-local:1.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.derby:derby:10.13.1.1" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
-    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
   </component>
 </module>

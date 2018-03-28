@@ -40,7 +40,7 @@ public class BankStub implements IBank {
 
             return r.getAmount();
         } catch(Exception e) {
-            e.printStackTrace();
+            System.out.println("Bank is down");
             return 0;
         }
     }
