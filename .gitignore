@@ -1,9 +1,13 @@
+# User-specific stuff
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/dictionaries
+
+# File-based project format
+*.iws
+
+# Builds
+out/
 build/
 *.class
 *.beam
-
-tags
-bibliography
-slides
-*books*
-*.pdf
