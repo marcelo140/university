@@ -14,5 +14,9 @@
 (assert (=> (or (immortal unicorn) (mammal unicorn)) (horned unicorn)))
 (assert (=> (horned unicorn) (magical unicorn)))
 
+; (assert (not (and (and (and (and (not (mythical unicorn)) (not (immortal unicorn))) (mammal unicorn)) (horned unicorn)) (magical unicorn))))
+; (assert (not (and (and (and (and (mythical unicorn) (immortal unicorn)) (mammal unicorn)) (horned unicorn)) (magical unicorn))))
+; (assert (not (and (and (and (and (mythical unicorn) (immortal unicorn)) (not (mammal unicorn))) (horned unicorn)) (magical unicorn))))
+
 (check-sat)
 (get-model)
