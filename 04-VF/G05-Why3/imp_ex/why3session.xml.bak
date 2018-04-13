@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="Z3" version="4.6.0" timelimit="10" steplimit="0" memlimit="4000"/>
+<prover id="1" name="CVC4" version="1.4" timelimit="10" steplimit="0" memlimit="4000"/>
+<prover id="2" name="Alt-Ergo" version="2.0.0" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="3" name="Coq" version="8.7.1" timelimit="60" steplimit="0" memlimit="1000"/>
+<file name="../imp_ex.why" expanded="true">
+<theory name="Imp" sum="b50b0dde7aa1644a0366f260ed260405" expanded="true">
+ <goal name="ident_eq_dec" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.00" steps="1"/></proof>
+ </goal>
+ <goal name="check_skip" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.00" steps="2"/></proof>
+ </goal>
+ <goal name="Test13" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.00" steps="3"/></proof>
+ </goal>
+ <goal name="Test42" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.00" steps="3"/></proof>
+ </goal>
+ <goal name="Test55" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.01" steps="16"/></proof>
+ </goal>
+ <goal name="Ass42" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.03" steps="91"/></proof>
+ </goal>
+ <goal name="If42" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.07" steps="328"/></proof>
+ </goal>
+ <goal name="progress" expl="" expanded="true">
+ <proof prover="0"><result status="timeout" time="10.00"/></proof>
+ <proof prover="1"><result status="unknown" time="0.04"/></proof>
+ <proof prover="2" timelimit="10" memlimit="4000"><result status="unknown" time="0.02"/></proof>
+ <proof prover="3" edited="imp_ex_Imp_progress_2.v"><result status="valid" time="0.81"/></proof>
+ </goal>
+ <goal name="steps_non_neg" expl="" expanded="true">
+ <proof prover="0"><result status="timeout" time="10.00"/></proof>
+ <proof prover="1"><result status="unknown" time="9.87"/></proof>
+ <proof prover="2" timelimit="10" memlimit="4000"><result status="timeout" time="10.02"/></proof>
+ <proof prover="3" edited="imp_ex_Imp_steps_non_neg_2.v"><result status="valid" time="0.85"/></proof>
+ </goal>
+ <goal name="many_steps_seq" expl="" expanded="true">
+ <proof prover="0"><result status="timeout" time="10.00"/></proof>
+ <proof prover="1"><result status="unknown" time="9.80"/></proof>
+ <proof prover="2" timelimit="10" memlimit="4000"><result status="timeout" time="10.04"/></proof>
+ <proof prover="3" edited="imp_ex_Imp_many_steps_seq_2.v"><result status="valid" time="0.94"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

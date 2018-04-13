@@ -1,0 +1,39 @@
+theory GuestPlacement
+
+type person = Anne | Susan | Peter
+
+type chair = Left | Middle | Right
+
+predicate sits person chair
+
+axiom Everyone_sits: forall p : person . exists c: chair . sits p c
+axiom Everyone_sits_in_only_one_chair: forall p1,p2 : person . forall c: chair .
+    sits p1 c /\ sits p2 c -> p1 = p2
+
+axiom Anne_dislikes_peter: (sits Anne Left \/ sits Anne Right) -> not (sits Peter Middle)
+axiom Anne_dislikes_peter2: sits Anne Middle -> not (sits Peter Left) /\ not (sits Peter Right)
+
+axiom Anne_dislikes_left: not (sits Anne Left)
+
+(*
+axiom Peters_right_side_smells: sits Peter Left -> not (sits Susan Middle) /\
+                                sits Peter Middle -> not (sits Susan Right)
+*)
+
+goal PlacementNotPossible: false
+
+goal RightAnne: sits Anne Right
+goal RightSusan: sits Susan Right
+goal RightPeter: sits Peter Right
+
+goal MiddleAnne: sits Anne Middle
+goal MiddleSusan: sits Susan Middle
+goal MiddlePeter: sits Peter Middle
+
+goal LeftAnne: sits Anne Left
+goal LeftSusan: sits Susan Left
+goal LeftPeter: sits Peter Left
+
+goal notSitsRightPeter: not (sits Peter Right)
+
+end

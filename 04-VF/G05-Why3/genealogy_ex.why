@@ -1,0 +1,60 @@
+theory Genealogy
+
+  type person
+
+  type gender = Male | Female
+
+  function gender person : gender
+
+  function father person : person
+  function mother person : person
+
+  axiom Father_gender : forall p : person. gender (father p) = Male
+  axiom Mother_gender : forall p : person. gender (mother p) = Female
+
+  predicate parent (p : person) (c : person) = p = father c \/ p = mother c
+
+  predicate son (s : person) (p : person) = gender s = Male /\ parent p s
+  predicate daughter (d : person) (p : person) = gender d = Female /\ parent p d
+
+  predicate child (c : person) (p : person) = parent p c
+
+  goal Child_is_son_or_daughter:
+    forall c p : person. child c p <-> son c p \/ daughter c p
+
+  predicate sibling (p1 : person) (p2 : person) =
+    p1 <> p2 /\ (father p1 = father p2 \/ mother p1 = mother p2)
+
+  goal Sibling_sym : forall p1 p2 : person. sibling p1 p2 -> sibling p2 p1
+
+  predicate brother (b : person) (p : person) = sibling b p /\ gender b = Male
+  predicate sister  (s : person) (p : person) = sibling s p /\ gender s = Female
+
+  goal Sibling_is_brother_or_sister:
+    forall p1 p2 : person. sibling p1 p2 <-> brother p1 p2 \/ sister p1 p2
+
+  predicate grandfather (gf: person) (gc: person) =
+    gf = father (father gc) \/ gf = father (mother gc)
+
+  predicate grandmother (gm: person) (gc: person) =
+    mother (father gc) = gm \/ mother (mother gc) = gm
+
+  predicate grandparent (gp: person) (gc: person) = grandmother gp gc \/ grandfather gp gc
+
+  goal Grandparent_is_grandfather_or_grandmother:
+    forall p1 p2 : person. grandparent p1 p2 <-> grandfather p1 p2 \/ grandmother p1 p2
+
+  goal Grandfather_is_male:
+    forall p1 p2: person. grandfather p1 p2 -> gender p1 = Male
+
+  goal Grandfather_is_female:
+    forall p1 p2: person. grandmother p1 p2 -> gender p1 = Female
+
+  goal Only_two_grandfathers:
+    forall all gf1 gf2 gf3 c: person.
+      grandfather gf1 c ->
+      grandfather gf2 c ->
+      grandfather gf3 c ->
+      (gf1 = gf3 \/ gf2 = gf3 \/ gf1 = gf2)
+
+end

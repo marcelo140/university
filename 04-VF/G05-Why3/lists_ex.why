@@ -1,0 +1,26 @@
+
+theory Lists
+
+  use import list.List
+  use import int.Int
+
+
+  function (++) (l1 l2: list 'a) : list 'a =
+  match l1 with
+    | Nil -> l2
+    | Cons x1 r1 -> Cons x1 (r1 ++ l2)
+  end
+
+
+  lemma app_nil:
+    forall l :list 'a. l++Nil = l
+
+
+
+
+ (...)
+
+
+
+end
+

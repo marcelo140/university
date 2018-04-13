@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="CVC4" version="1.5" timelimit="5" steplimit="0" memlimit="1000"/>
+<file name="../hello_proof.why" expanded="true">
+<theory name="HelloProof" sum="c1f4aa7ee9a0b24ffc57ffacedf86d11" expanded="true">
+ <goal name="G1" expl="" expanded="true">
+ <proof prover="0"><result status="valid" time="0.01"/></proof>
+ </goal>
+ <goal name="G2" expl="" expanded="true">
+ </goal>
+ <goal name="G3" expl="" expanded="true">
+ <proof prover="0"><result status="valid" time="0.01"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>
