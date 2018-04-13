@@ -1,8 +1,10 @@
 [package]
-name = "ex1"
+name = "graph-connect"
 version = "0.1.0"
 authors = ["escolhido <marcelo.caridade@protonmail.com>"]
 
 [dependencies]
 petgraph = "0.4.11"
 rand = "0.4.2"
+clap = "2.31"
+criterion-plot = "0.2"
