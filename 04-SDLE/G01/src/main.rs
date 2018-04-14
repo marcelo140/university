@@ -76,7 +76,7 @@ fn plot_averages(nodes: usize) {
 }
 
 fn main() {
-    let matches = App::new("graph-connect")
+    let matches = App::new("G01")
                           .about("Allows some sampling with connected graphs")
                           .arg(Arg::with_name("N")
                                 .global(true)
