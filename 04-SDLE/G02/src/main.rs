@@ -47,7 +47,7 @@ fn build_preferential_graph(nodes: usize) -> Graph<usize, (), Undirected> {
 
         let edge = graph.update_edge(*a, b, ());
 
-        if is_cyclic_undirected(&graph) {
+        if *a == b || is_cyclic_undirected(&graph) {
             graph.remove_edge(edge);
         } else {
             *graph.index_mut(*a) += 1;
