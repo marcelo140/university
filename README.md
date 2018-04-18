@@ -34,4 +34,4 @@ This repository holds resolutions for some of the exercises solved over my last 
 - [Specification and Modelling (NuSMV)](https://github.com/marcelo140/landing-system) - modelling and verifying a landing system.
 - [Specification and Modelling (Alloy)](https://github.com/marcelo140/monopoly) - modelling and verifying some of the monopoly rules.
 - [Fundamentals of Distributed Systems (Java)](https://github.com/9thScientist/FSD) - distributed objects API with transactions and 2-phase commit.
-- [Paradigms of Distributed Systems (Erlang, Java)](https://github.com/zesilva63/PSD) - stack exchange mixing multiple distributed architectures.
+- [Paradigms of Distributed Systems (Erlang, Java)](https://github.com/zesilva63/PSD) - stock exchange mixing multiple distributed architectures.
