@@ -1,7 +1,7 @@
-use petgraph::{Graph, Undirected};
+use petgraph::algo::{connected_components, is_cyclic_undirected};
+use petgraph::dot::{Config, Dot};
 use petgraph::graph::NodeIndex;
-use petgraph::algo::{is_cyclic_undirected, connected_components};
-use petgraph::dot::{Dot, Config};
+use petgraph::{Graph, Undirected};
 
 use rand::{self, Rng};
 use std::ops::{Index, IndexMut};
@@ -37,7 +37,7 @@ pub fn build_connected_graph(nodes: usize) -> Graph<usize, (), Undirected> {
         graph.update_edge(*a, *b, ());
     }
 
-    return graph;
+    graph
 }
 
 fn select_by_degree(graph: &Graph<usize, (), Undirected>, mut selected: i32) -> NodeIndex {
@@ -80,7 +80,7 @@ pub fn build_preferential_graph(nodes: usize) -> Graph<usize, (), Undirected> {
         }
     }
 
-    return graph;
+    graph
 }
 
 pub fn print_graph(graph: &Graph<usize, (), Undirected>) {

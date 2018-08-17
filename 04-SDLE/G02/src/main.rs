@@ -1,17 +1,17 @@
-extern crate petgraph;
-extern crate rand;
 extern crate clap;
 extern crate criterion_plot as plot;
+extern crate petgraph;
+extern crate rand;
 
-use petgraph::{Graph, Undirected};
+use petgraph::algo::{connected_components, is_cyclic_undirected};
+use petgraph::dot::{Config, Dot};
 use petgraph::graph::NodeIndex;
-use petgraph::algo::{is_cyclic_undirected, connected_components};
-use petgraph::dot::{Dot, Config};
+use petgraph::{Graph, Undirected};
 
-use rand::Rng;
-use std::ops::{Index, IndexMut};
 use clap::{App, Arg, SubCommand};
 use plot::prelude::*;
+use rand::Rng;
+use std::ops::{Index, IndexMut};
 use std::str::FromStr;
 
 const DEFAULT_NODES: usize = 100;
@@ -56,7 +56,7 @@ fn build_preferential_graph(nodes: usize) -> Graph<usize, (), Undirected> {
         }
     }
 
-    return graph;
+    graph
 }
 
 fn nodes_with_degree(graph: &Graph<usize, (), Undirected>, degree: usize) -> usize {
@@ -66,42 +66,43 @@ fn nodes_with_degree(graph: &Graph<usize, (), Undirected>, degree: usize) -> usi
 
 fn plot_power_wall(graph: &Graph<usize, (), Undirected>) {
     let max_degree = graph.raw_nodes().iter().map(|n| n.weight).max().unwrap();
-    let ref xs: Vec<usize> = (2..max_degree+1).collect();
+    let xs: Vec<usize> = (2..max_degree + 1).collect();
 
     Figure::new()
-		.configure(Axis::BottomX, |a| {
-			a.set(Label("Degree"))
-			 .configure(Grid::Major, |g| g.show())
-		})
-		.configure(Axis::LeftY, |a| {
-			a.set(Label("Number of nodes"))
-			 .configure(Grid::Major, |g| g.show())
-		})
-		.plot(LinesPoints {
-			x: xs,
-            y: xs.iter().map(|x| nodes_with_degree(&graph, *x))
-		}, |lp| {
-			lp.set(PointType::FilledCircle)
-			  .set(PointSize(0.6))
-		})
-		.draw()
-		.ok()
-		.and_then(|gnuplot| {
-			gnuplot.wait_with_output().ok().and_then(|p| String::from_utf8(p.stderr).ok())
-		});
+        .configure(Axis::BottomX, |a| {
+            a.set(Label("Degree")).configure(Grid::Major, |g| g.show())
+        })
+        .configure(Axis::LeftY, |a| {
+            a.set(Label("Number of nodes"))
+                .configure(Grid::Major, |g| g.show())
+        })
+        .plot(
+            LinesPoints {
+                x: &xs,
+                y: xs.iter().map(|x| nodes_with_degree(&graph, *x)),
+            },
+            |lp| lp.set(PointType::FilledCircle).set(PointSize(0.6)),
+        )
+        .draw()
+        .ok()
+        .and_then(|gnuplot| {
+            gnuplot
+                .wait_with_output()
+                .ok()
+                .and_then(|p| String::from_utf8(p.stderr).ok())
+        });
 }
 
 fn main() {
     let matches = App::new("preferential-graph")
-                          .about("Allows some sampling with preferential graphs")
-                          .arg(Arg::with_name("N")
-                                .global(true)
-                                .help("Number of nodes"))
-                          .subcommand(SubCommand::with_name("generate"))
-                          .subcommand(SubCommand::with_name("plot"))
-                          .get_matches();
+        .about("Allows some sampling with preferential graphs")
+        .arg(Arg::with_name("N").global(true).help("Number of nodes"))
+        .subcommand(SubCommand::with_name("generate"))
+        .subcommand(SubCommand::with_name("plot"))
+        .get_matches();
 
-    let nodes = matches.value_of("N")
+    let nodes = matches
+        .value_of("N")
         .and_then(|s| usize::from_str(s).ok())
         .unwrap_or(DEFAULT_NODES);
 
