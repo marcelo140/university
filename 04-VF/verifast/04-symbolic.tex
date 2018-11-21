@@ -1,0 +1,17 @@
+\section{Execução simbólica}
+
+A verificação é baseada na execução simbólica de cada função, determinando quais os inputs que causam os vários comportamento do programa. Um interpretador segue o programa, assumindo valores simbólicos para os inputs ao invés de obter valores reais como aconteceria numa execução normal do programa. À medida que a função é verificada, são derivadas restrições e expressões para descrever o conjunto de valores que estes valores simbólicos podem assumir. Com estas expressões e restrições é possível, por exemplo, identificar quais os resultados possíveis em cada \emph{branch} condicional.
+
+\subsection{Estados simbólicos}
+
+O VeriFast verifica modularmente os programas, executando simbolicamente cada rotina e recorrendo aos contratos das restantes rotinas para verificar as respetivas invocações. A execução simbólica é em muito semelhante à execução concreta exceto no facto de, ao invés de usar valores concretos, são usados termos de um \textit{SMT solver} que contêm símbolos lógicos. No inicio da execução simbólica de uma rotina é usado um novo símbolo lógico para representar cada um dos parâmetros da rotina.
+
+Um estado simbólico $\sigma = (\Sigma, \texttt{h}, \texttt{s})$ consiste em \textit{path conditions} $\Sigma$, uma \textit{symbolic heap} \texttt{h}, e uma \textit{symbolic store} \texttt{s}. As \textit{path conditions} são o conjunto de fórmulas em lógica de primeira ordem usadas para descrever os valores dos símbolos lógicos que aparecem na \textit{symbolic store} e na \textit{symbolic heap}. A \textit{heap} simbólica contém \textit{heap chunks}. Um \textit{heap chunk} pode dizer respeito a um campo de uma estrutura ou a um predicado definido pelo utilizador. A \textit{symbolic store} mapeia os nomes das variáveis locais para termos que representam os seus valores.
+
+\subsection{Execução de uma rotina}
+
+A execução simbólica de uma rotina começa por produzir a pré-condição, verificando depois o corpo da rotina, e finalmente consumir a pós-condição. Produzir uma asserção significa adicionar os \textit{chunks} e assunções descritas por essa asserção ao estado simbólico. Inversamente, consumir uma asserção significa remover os \textit{chunks} referidos da \textit{symbolic heap} e verificar as assunções descritas na asserção contra as \textit{path conditions}.
+
+Verificar uma chamada a uma rotina significa consumir a pré-condição dessa rotina, escolher uma variável livre para representar o valor de retorno e produzir a pós-condição. A chamada termina fazendo \textit{binding} do valor de retorno na \textit{symbolic store} da função que chamou a rotina.
+
+Verificar uma rotina significa fazer \textit{binding} dos parâmetros para variáveis livres, produzir a pré-condição, guardar a \emph{symbolic store} resultante s', verificar o corpo da rotina sobre a \textit{symbolic store} original, restaurar a \textit{symbolic store} s' e fazer \textit{binding} do valor de retorno. Por fim, consome-se a pós-condição. A rotina é válida se existir pelo menos um conjunto de transições tal que o estado inicial não leva a \texttt{abort}, que significa que um erro foi encontrado.

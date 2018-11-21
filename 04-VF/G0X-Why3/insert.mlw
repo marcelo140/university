@@ -1,0 +1,52 @@
+module InsertionSortList
+  use import int.Int
+  use import list.List
+  use import list.Mem
+  use import list.SortedInt
+  use import list.Permut
+  use import list.Length
+
+let rec insert x l =  
+    requires { sorted l }
+    ensures { sorted result /\ permut result (Cons x l) }
+    variant { length l }
+    match l with
+    | Nil -> Cons x Nil
+    | Cons y l' -> if x <= y then Cons x l else Cons y (insert x l')
+    end
+
+let rec insertionSort l = 
+    ensures { permut result l /\ sorted result }
+    variant { length l }
+    match l with
+    | Nil -> Nil
+    | Cons x l' -> insert x (insertionSort l')
+    end
+end
+
+module InsertionSort 
+  use import int.Int
+  use import ref.Ref
+  use import array.Array
+  use import array.IntArraySorted
+  use import array.ArrayPermut
+  use import array.ArrayEq
+
+  let insertion_sort (a: array int) =
+    ensures { sorted a }
+    for i = 1 to length a - 1 do
+      invariant { sorted_sub a 0 i }
+      let v = a[i] in
+      let j = ref i in
+      while !j > 0 && a[!j - 1] > v do
+        invariant { 0 <= !j <= i }
+        invariant { !j = i -> sorted_sub a 0 i }
+        invariant { !j < i -> sorted_sub a 0 (i+1) }
+        invariant { forall k: int. !j+1 <= k <= i -> v < a[k] }
+        variant { !j }
+        a[!j] <- a[!j - 1];
+        j := !j - 1
+      done;
+      a[!j] <- v
+    done
+end

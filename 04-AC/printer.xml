@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+typedef int[1,26] char;
+
+chan produce[char];</declaration>
+	<template>
+		<name x="5" y="5">Reader</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="0" y="0">
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="select" x="76" y="-17">c : char</label>
+			<label kind="synchronisation" x="76" y="0">produce[c]?</label>
+			<nail x="68" y="51"/>
+			<nail x="68" y="-42"/>
+		</transition>
+	</template>
+	<template>
+		<name>Printer</name>
+		<declaration>clock t;</declaration>
+		<location id="id1" x="272" y="0">
+			<name x="262" y="-34">O</name>
+		</location>
+		<location id="id2" x="8" y="0">
+			<name x="-2" y="-34">L1</name>
+			<label kind="invariant" x="-17" y="17">t &lt;= 5</label>
+		</location>
+		<location id="id3" x="135" y="0">
+			<name x="125" y="-34">L2</name>
+			<label kind="invariant" x="110" y="17">t &lt;= 5</label>
+		</location>
+		<location id="id4" x="-119" y="0">
+			<name x="-129" y="-34">E</name>
+			<label kind="invariant" x="-144" y="17">t &lt;= 5</label>
+		</location>
+		<location id="id5" x="-238" y="0">
+			<name x="-248" y="-34">H</name>
+			<label kind="invariant" x="-263" y="17">t &lt;= 5</label>
+		</location>
+		<location id="id6" x="-365" y="0">
+			<label kind="invariant" x="-433" y="0">t &lt;= 5</label>
+		</location>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="guard" x="187" y="59">t == 5</label>
+			<label kind="assignment" x="187" y="76">t = 0</label>
+			<nail x="212" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="42" y="59">t == 5</label>
+			<label kind="assignment" x="42" y="76">t = 0</label>
+			<nail x="68" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-76" y="59">t == 5</label>
+			<label kind="assignment" x="-76" y="76">t = 0</label>
+			<nail x="-59" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-195" y="59">t == 5</label>
+			<label kind="assignment" x="-195" y="76">t = 0</label>
+			<nail x="-178" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-323" y="59">t == 5</label>
+			<label kind="assignment" x="-323" y="76">t = 0</label>
+			<nail x="-306" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="guard" x="153" y="-51">t &lt;= 5</label>
+			<label kind="synchronisation" x="153" y="-34">produce[15]!</label>
+			<label kind="assignment" x="153" y="-17">t = 0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="25" y="-51">t &lt;= 5</label>
+			<label kind="synchronisation" x="25" y="-34">produce[12]!</label>
+			<label kind="assignment" x="25" y="-17">t = 0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-102" y="-51">t &lt;= 5</label>
+			<label kind="synchronisation" x="-102" y="-34">produce[12]!</label>
+			<label kind="assignment" x="-102" y="-17">t = 0</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-221" y="-51">t &lt;= 5</label>
+			<label kind="synchronisation" x="-221" y="-34">produce[5]!</label>
+			<label kind="assignment" x="-221" y="-17">t = 0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-348" y="-51">t &lt;= 5</label>
+			<label kind="synchronisation" x="-348" y="-34">produce[8]!</label>
+			<label kind="assignment" x="-348" y="-17">t = 0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+
+// List one or more processes to be composed into a system.
+system Printer, Reader;
+    </system>
+	<queries>
+	</queries>
+</nta>

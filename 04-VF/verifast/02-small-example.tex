@@ -1,0 +1,76 @@
+\section{Verificação de um pequeno exemplo}
+
+Nesta secção iremos verificar um pequeno programa C de forma a ganhar alguma intuição sobre o funcionamento da ferramenta. Apenas funções com um contrato são verificadas portanto, como queremos verificar a função \emph{main}, devemos adicionar-lhe o devido contrato.
+
+\begin{lstlisting}[language=C]
+struct account {
+    int balance;
+};
+
+int main()
+    //@ requires true;
+    //@ ensures true;
+{
+    struct account *myAccount = malloc(sizeof(struct account));
+    // if (myAccount == 0) { abort(); }
+    myAccount->balance = 5;
+    free(myAccount);
+    return 0;
+}
+\end{lstlisting}
+
+O programa em causa começa por alocar uma estrutura de dados, prosseguindo a alterar o seu conteúdo. Antes de terminar o programa, a memória relativa à estrutura é libertada. Para verificar este programa, o VeriFast realiza uma execução simbólica, analisando todas as possíveis ramificações. Como podemos ver através da mensagem de erro abaixo, o VeriFast determina corretamente que este programa não é válido visto que, no caso da alocação falhar, este tenta ainda alterar o conteúdo da estrutura, realizando um acesso à memória inválido.
+\begin{lstlisting}
+    No matching heap chunks: account_balance(myAccount)
+\end{lstlisting}
+Nesta mensagem, o VeriFast informa que não existe nenhum \emph{chunk} \texttt{account\_balance(myAccount)} no estado simbólico do programa. A rotina \texttt{malloc}, quando bem sucedida, produz um \textit{chunk} \texttt{malloc\_block\_account(myAccount)} e um \textit{chunk} \texttt{account\_balance(myAccount)}. O primeiro indica que \texttt{myAccount} aponta para uma estrutura na \textit{heap} e é necessário para libertar a memória dessa estrutura. Isto é importante para impedir que seja realizado um \texttt{free} numa estrutura de dados que esteja guardada na \textit{stack} ao invés da \textit{heap}. O segundo \textit{chunk}, quando presente, indica que o programa tem permissões para aceder ao campo \texttt{balance} da estrutura.
+
+Para corrigir o programa, bastaria descomentar a linha em comentário no corpo da função, abortando o programa nos casos em que a rotina \texttt{malloc} falha. \\
+
+Para terminar este exemplo, vamos mover a atribuição do campo \texttt{balance} para uma nova função \texttt{account\_set\_balance}. Dado que a verificação da função \textit{main} requer que todas as rotinas que são chamadas possuam também contrato, começamos por introduzir o mesmo contrato que definimos para a função \textit{main}.
+\begin{lstlisting}[language=C]
+void account_set_balance(struct account *myAccount, int newBalance)
+    //@ requires true;
+    //@ ensures true;
+{
+    myAccount->balance = newBalance;
+    //@ leak account_balance(myAccount, _);
+}
+
+int main()
+    //@ requires true;
+    //@ ensures true;
+{
+    struct account *myAccount = malloc(sizeof(struct account));
+    if (myAccount == 0) { abort(); }
+    account_set_balance(myAccount, 5);
+    free(myAccount);
+    return 0;
+}
+\end{lstlisting}
+Tendo em conta o que já foi visto e dado que cada função é verificada isoladamente, facilmente concluímos que a função \texttt{account\_set\_balance} não é verificada devido à ausência do \texttt{chunk account\_balance} no estado simbólico.
+\begin{lstlisting}[language=C]
+void account_set_balance(struct account *myAccount, int newBalance)
+    //@ requires account_balance(myAccount, _);
+    //@ ensures true;
+{
+    myAccount->balance = newBalance;
+    //@ leak account_balance(myAccount, _);
+}
+\end{lstlisting}
+Adicionando o respetivo \textit{chunk} à pré-condição, a atribuição é verificada com sucesso. Como no fim da verificação existe ainda o \textit{chunk} \texttt{account\_balance} no estado simbólico, o VeriFast requer que declaremos explicitamente que a rotina possui um \textit{leak}.
+
+No entanto, embora a função \texttt{account\_set\_balance} seja verifica com sucesso, a função \textit{main} falha. Isto acontece porque o \texttt{account\_set\_balance} consome o \textit{chunk} \texttt{account\_balance}, o qual é necessário para realizar o \texttt{free}. Este problema pode ser corrigdo retornando o \textit{chunk} para o invocador da função através da pós-condição.
+\begin{lstlisting}[language=C]
+void account_set_balance(struct account *myAccount, int newBalance)
+    //@ requires account_balance(myAccount, _);
+    //@ ensures account_balance(myAccount, newBalance);
+{
+    myAccount->balance = newBalance;
+}
+\end{lstlisting}
+É importante ainda notar que o parâmetro \texttt{newBalance} se encontra na posição relativa ao valor do campo \texttt{balance}. Isto significa que, aquando o retorno da função, o campo balance vai ter o mesmo valor que o parâmetro. \\
+
+Para permitir a especificação de programas mais ricos, o VeriFast permite que o programador defina tipos de dados indutivos, funções recursivas sem \textit{side-effects} sobre estes tipos de dados, assim como predicados abstratos em lógica de separação. Quanto à verificação destas especificações, o programador pode escrever \emph{lemma functions} -- funções que provam que a pré-condição implica a pós-condição. O verificador confere que também estas funções não possuem \textit{side-effects} e garante a sua terminação.
+
+Estes assuntos, no entanto, não estão no âmbito do nosso relatório mas podem ser estudados detalhadamente no tutorial da ferramenta \cite{tutorial}.

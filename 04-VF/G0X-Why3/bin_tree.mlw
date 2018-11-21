@@ -1,0 +1,45 @@
+module Bintree_insert
+  use import int.Int
+  type tree 'a = Empty | Node (tree 'a) 'a (tree 'a)
+         
+(* k ocorre em t *)
+  predicate memt (t : tree int) (k : int) =
+    match t with
+    | Empty -> false
+    | Node left x right -> if k = x then true
+                                    else (memt left k) \/ (memt right k)
+
+(* t <= x *)    
+  predicate leq_tree (k : int) (t : tree int) =
+    match t with
+    | Empty -> true
+    | Node left x right -> if x < k then false
+                                    else (leq_tree k left) /\ (leq_tree k right)
+    
+
+(* x <= t *)    
+  predicate geq_tree (x : int) (t : tree int) =
+    match t with
+    | Empty -> true
+    | Node left x right -> if x > k then false
+                                    else (leq_tree k left) /\ (leq_tree k right)
+
+(* t inorder *)
+  predicate sorted (t : tree int) =
+    ...
+
+(* num de ocorrências de x em t *)  
+  function num_occ (x: 'a) (t: tree 'a) : int =
+    ...
+
+(* inserção inorder *)
+  let rec add (t : tree int) (v : int) : tree int =
+    requires {sorted t}
+    ensures { (sorted result) }
+    match t with
+     | Empty -> Node (Empty) v (Empty)
+     | Node t1 x t2 ->
+       if v <= x then Node (add t1 v) x t2 
+                 else Node t1 x (add t2 v)
+    end
+end

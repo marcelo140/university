@@ -1,0 +1,26 @@
+\section{Verificação de programas \textit{multi-threaded}}
+
+O VeriFast permite verificar programas \textit{multi-threaded} que partilham a \textit{heap}, \textit{mutexes} e outros recursos pelas várias \textit{threads}. Para este efeito, o Verifast suporta permissões fracionárias e, através de uma biblioteca, suporta também \textit{counting permissions}.
+
+Nesta secção iremos debruçar-nos sobre o uso de permissões fracionárias, enunciando algumas das funcionalidades suportadas para facilitar o seu uso, assim como as suas limitações.
+
+\subsection{Permissões fracionárias}
+
+As permissões fracionárias são usadas para suportar acesso de leitura a memória partilhada. Cada \textit{chunk} da memória possui um coeficiente, um número real que varia entre zero (exclusive) e um (inclusive). O coeficiente \textit{default} é 1 e é tipicamente omitido. Um \textit{chunk} com coeficiente 1 representa uma permissão completa, ou seja, permissão para realizar acessos tanto de escrita como leitura. Um \textit{chunk} com coeficiente menor que 1 representa uma permissão fracionária e permite apenas acessos de leitura.
+
+\begin{lstlisting}[language=C]
+int read_cell(int *cell)
+    //@ requires [?f]integer(cell, ?v);
+    //@ ensures [f]integer(cell, v) &*& result == v;
+{
+    return *cell;
+}
+\end{lstlisting}
+
+Como exemplo, vejamos a função acima que requer uma fração arbitrária \texttt{f} do \textit{chunk} \texttt{integer} de forma a permitir a leitura do valor contido em \texttt{cell}, retornando a mesma fração para o invocador.
+
+Imaginemos agora um cenário em que temos duas \textit{threads} que vão derivar valores (somatório, média, produtório, etc) a partir da mesma estrutura de dados. Para isto, as função que derivam os valores devem especificar uma fração até 1/2 na pré-condição, permitindo assim que ambas as \textit{threads} consigam realizar leituras sobre a estrutura de dados partilhada. \\
+
+Para facilitar a aplicação de permissões fracionárias a predicados definidos pelo programador, o VeriFast suporta \textit{precise predicates}, assim como \textit{dummy fractions} para facilitar a partilha ilimitada de um recurso, útil em casos nos quais reagrupar as frações não é necessário.
+
+Permissões fracionárias são suficientes em muitos dos cenários de partilha de recursos. No entanto, um cenário em que não são aplicáveis é quando o programa a verificar utiliza \textit{reference counting} para sincronizar os acessos a um recurso. Neste cenário, é tipicamente usado outro método de gestão de permissões, conhecido por \textit{counting permissions} \cite{symbolic}.

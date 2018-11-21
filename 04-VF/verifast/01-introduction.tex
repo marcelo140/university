@@ -1,0 +1,15 @@
+\section{Introdução}
+
+VeriFast é uma ferramenta de verificação para programas C e Java que visa verificar propriedades de correção tanto em programas \textit{single-threaded} como \textit{multi-threaded}, recorrendo a anotações que descrevem pré-condições e pós-condições . É importante notar que a ferramenta em estudo não tem em conta propriedades de \textit{liveness}, sendo impossível verificar a terminação de um programa. Um programa verificado pelo VeriFast é considerado \textit{sem erros} quando
+
+\begin{itemize}
+    \item não efetua acessos ilegais à memória, como ler ou escrever fora dos limites de um \textit{array} ou em memória que já foi libertada;
+    \item não possui \textit{data races}, isto é, acessos concorrentes não sincronizados em que pelo menos um deles é uma escrita;
+    \item e cujas funções respeitam as pré-condições e pós-condições especificadas pelo programador.
+\end{itemize}
+
+Estes erros são detetados através de uma execução simbólica do programa, no qual o corpo de cada função é executado isoladamente partindo do estado descrito na pré-condição. Para cada comando de uma função, é necessário verificar que existem permissões no estado simbólico tal que os vários acessos de memória realizados são legais. É ainda necessário atualizar o estado para refletir os efeitos do comando. \\
+
+Esta ferramenta distingue-se de ferramentas como o \textit{Frama-C} por ser baseada em lógica de separação, uma extensão à lógica de Hoare. A lógica de separação permite raciocinar sobre manipulação de apontadores, possibilitando a descrição de estruturas de dados dinâmicas, \textit{aliasing} de apontadores e partilha de dados por varias \textit{threads}. \\
+
+Começaremos este relatório por demonstrar como verificar um pequeno programa C de forma a expor os leitores ao funcionamento da ferramenta (Secção 2). De seguida, fazemos uma apresentação, sem grande detalhe, ao uso do VeriFast para verificar programas \textit{multi-threaded} (Secção 3). Para terminar, analisamos o modo como o VeriFast recorre à execução simbólica para realizar a verificação de programas (Secção 4), terminando com algumas observações sobre a ferramenta (Secção 5).

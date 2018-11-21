@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{a4wide}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center
+
+\textsc{\LARGE Universidade do Minho}\\[0.7cm]
+\textsc{\Large Mestrado Integrado de Engenharia Informática}\\[3cm]
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Verificação Formal}\\[0.4cm]
+\textsc{\large VeriFast Program Verifier}\\[0.4cm]
+\HRule \\[1cm]
+
+\begin{minipage}{\textwidth}
+    \centering
+    \item Bruno Cancelinha\\
+    \item Marcelo Miranda\\
+\end{minipage}
+
+\vspace{4cm}
+{\large \today}\\[0.5cm]
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\includegraphics[scale=0.3]{img/uminho.png}\\[1cm]
+
+%----------------------------------------------------------------------------------------
+
+\vill
+
+\end{titlepage}
+
+\newpage
+
+\input{01-introduction.tex}
+
+\input{02-small-example.tex}
+
+\input{03-fractional.tex}
+
+\input{04-symbolic.tex}
+
+\input{05-conclusion.tex}
+
+\input{06-references.tex}
+
+\end{document}

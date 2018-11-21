@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>const int wtime = 5;
+const int ctime = 2;
+
+const int JOBS = 2;
+const int STATIONS = 3;
+const int PRODUCTS = 4;
+
+typedef int[0, JOBS-1]     id_j;
+typedef int[0, STATIONS-1] id_s;
+typedef int[0, PRODUCTS-1] id_p;
+
+bool free_stations[STATIONS] = { true, true, true };
+
+int[0, STATIONS] available = STATIONS;
+
+id_j station_jobs[STATIONS] = { 0, 0, 1 };
+
+const bool dependencies[JOBS][JOBS] = { {false, false },
+                                        {true , false } };
+
+chan product_arrival[id_s], product_standby[id_s], product_freed[id_s];
+urgent chan go;</declaration>
+	<template>
+		<name x="5" y="5">Product</name>
+		<parameter>const id_p id</parameter>
+		<declaration>clock m, t;
+bool done[JOBS];
+id_s station;
+
+bool is_complete() {
+    for (i : id_j) {
+        if (done[i] == false)
+            return false;
+    }
+
+    return true;
+}
+
+bool can_work(id_s s) {
+    id_j job = station_jobs[s];
+
+    return !done[job]
+           and
+           forall (j : id_j) dependencies[job][j] imply done[j];
+}
+
+bool progress_available() {
+    for (s : id_s) {
+        if (can_work(s) and free_stations[s])
+            return true;
+    }
+
+    return false;
+}
+
+void do_work(id_s s) {
+    id_j job = station_jobs[s];
+    done[job] = true;
+}
+
+void call_dispatcher() {
+    if (is_complete())
+        available += 1;
+}</declaration>
+		<location id="id0" x="-357" y="-263">
+			<name x="-374" y="-297">Start</name>
+		</location>
+		<location id="id1" x="-52" y="94">
+			<name x="-77" y="111">StandBy</name>
+		</location>
+		<location id="id2" x="-672" y="94">
+			<name x="-706" y="111">OnStation</name>
+		</location>
+		<location id="id3" x="-357" y="178">
+			<name x="-382" y="195">Done</name>
+		</location>
+		<location id="id4" x="-357" y="-76">
+			<name x="-349" y="-101">Moving</name>
+			<label kind="invariant" x="-349" y="-118">m &lt;= ctime</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-391" y="-187">go?</label>
+			<label kind="assignment" x="-408" y="-170">m = 0</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-43" y="-25">product_freed[station]?</label>
+			<label kind="assignment" x="-43" y="-8">m = 0</label>
+			<nail x="-52" y="-76"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="select" x="-332" y="-42">s : id_s</label>
+			<label kind="guard" x="-332" y="-25">m == ctime &amp;&amp; !is_complete()
+&amp;&amp; !progress_available()</label>
+			<label kind="synchronisation" x="-331" y="8">product_arrival[s]!</label>
+			<label kind="assignment" x="-331" y="25">station = s</label>
+			<nail x="-323" y="94"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-842" y="-25">product_freed[station]?</label>
+			<label kind="assignment" x="-841" y="-8">m = 0, call_dispatcher()</label>
+			<nail x="-672" y="60"/>
+			<nail x="-672" y="77"/>
+			<nail x="-672" y="-76"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-348" y="119">is_complete() and
+m == ctime</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="select" x="-433" y="-42">s : id_s</label>
+			<label kind="guard" x="-603" y="-25">m == ctime &amp;&amp; !is_complete()
+                          &amp;&amp; can_work(s)</label>
+			<label kind="synchronisation" x="-510" y="9">product_arrival[s]!</label>
+			<label kind="assignment" x="-544" y="25">station = s, do_work(s)</label>
+			<nail x="-391" y="94"/>
+		</transition>
+	</template>
+	<template>
+		<name>Dispatcher</name>
+		<location id="id5" x="0" y="0">
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id5"/>
+			<label kind="guard" x="68" y="-25">available &gt; 0</label>
+			<label kind="synchronisation" x="68" y="-8">go!</label>
+			<label kind="assignment" x="68" y="9">available -= 1</label>
+			<nail x="59" y="-42"/>
+			<nail x="59" y="42"/>
+		</transition>
+	</template>
+	<template>
+		<name>Station</name>
+		<parameter>const id_s id</parameter>
+		<declaration>clock x;</declaration>
+		<location id="id6" x="-170" y="-25">
+			<name x="-180" y="-59">Busy</name>
+			<label kind="invariant" x="-144" y="-34">x &lt;= wtime</label>
+		</location>
+		<location id="id7" x="-416" y="-25">
+			<name x="-433" y="-59">Free</name>
+		</location>
+		<init ref="id7"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-340" y="17">x == wtime</label>
+			<label kind="synchronisation" x="-340" y="34">product_freed[id]!</label>
+			<label kind="assignment" x="-340" y="51">free_stations[id] = true</label>
+			<nail x="-297" y="8"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-357" y="-76">product_arrival[id]?</label>
+			<label kind="assignment" x="-357" y="-93">x = 0, free_stations[id] = false</label>
+			<nail x="-297" y="-51"/>
+		</transition>
+	</template>
+	<system>system Product, Dispatcher, Station;</system>
+	<queries>
+		<query>
+			<formula>A[] Product(0).done[1] imply Product(0).done[0]
+			</formula>
+			<comment>If a specific product passes by a station N2, then it will have passed by station N1
+			</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; Product(0).Done &amp;&amp; Product(0).t &lt; 30
+			</formula>
+			<comment>A specific product is guaranteed to take less then T time to be completed.
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Product(0).Done
+			</formula>
+			<comment>A specific product P can become completed, i.e., pass all its associated stations
+			</comment>
+		</query>
+	</queries>
+</nta>
